@@ -77,6 +77,11 @@ fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
   crdsEnable: true
   enable: true
+#  livenessProbe:
+#    httpGet:
+#      port: 2020
+#      path: /api/v2/metrics/prometheus
+#    timeoutSeconds: 5
   serviceMonitor:
     enable: false
     interval: 30s
@@ -86,17 +91,9 @@ fluentbit:
     tlsConfig: {}
     relabelings: []
     metricRelabelings: []
-  livenessProbe:
-    enabled: true
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 15
-    successThreshold: 1
-    failureThreshold: 8
-
   image:
     repository: "ghcr.io/fluent/fluent-operator/fluent-bit"
-    tag: "3.2.5"
+    tag: "3.1.8"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
@@ -192,10 +189,8 @@ fluentbit:
   #     mountPropagation: HostToContainer
   #     name: hostBuffer
 
-  namespaceFluentBitCfgSelector: {}
 
-  # Configure the format of the config file to either classic or yaml. Default to classic when this value is not set
-  # configFileFormat: yaml
+  namespaceFluentBitCfgSelector: {}
 
   # Set a limit of memory that Tail plugin can use when appending data to the Engine.
   # You can find more details here: https://docs.fluentbit.io/manual/pipeline/inputs/tail#config
@@ -300,9 +295,9 @@ fluentbit:
     loki:
       # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
       enable: false # Bool
-      retryLimit: "no_limits"
       host: 127.0.0.1 # String
       port: 3100      # Int
+      #retryLimit: "no_retries"
       # Either, give http{User,Password},tenantID string values specifying them directly
       httpUser: myuser
       httpPassword: mypass
